@@ -6,8 +6,16 @@ exports.getAddProducts = (req, res, next) => {
 
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render('admin/products', {pageTitle:'Admin Products', path:'/admin/products', prods:products});
+  Product.fetchAll()
+  .then(([rows, fieldData]) => {
+    res.render('admin/products', {
+      pageTitle:'Admin Products', 
+      path:'/admin/products', 
+      prods:rows
+    });
+  })
+  .catch(err => {
+    console.log(err);
   });
 };
 
@@ -17,11 +25,16 @@ exports.postAddProducts = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null, title, imageUrl, price, description);
-  product.save();
-  res.redirect('/');
+  product.save()
+  .then(() => {
+    res.redirect('/');
+  })
+  .catch(err => {
+    console.log(err);
+  });
 };
 
-exports.getEditProduct = (req, res, next) => {
+exports.getEditProduct = (req, res, next) => {        // all these will not work
   const editMod = req.query.edit;
   if (!editMod) {
     return res.redirect('/');
@@ -40,7 +53,7 @@ exports.getEditProduct = (req, res, next) => {
   });
 };
 
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = (req, res, next) => {         // all these codes won't work
     const updatedId = req.body.productId;
     const updatedTitle = req.body.title;
     const updatedImageUrl = req.body.imageUrl;
@@ -51,7 +64,7 @@ exports.postEditProduct = (req, res, next) => {
     res.redirect('/admin/products');
 };
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = (req, res, next) => {       // all these codes won't work
   prodId = req.body.productId;
   Product.deleteSpecificProduct(prodId);
   res.redirect('/admin/products');

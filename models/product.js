@@ -1,19 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+const bodyParser = require('body-parser');
+const db = require('../util/database');
 
 const Cart = require('./cart');
-const rootDir = require('../util/path');
-
-const p = path.join(rootDir, 'data', 'products.json');
-
-const getProductsFromFile = (cb) => {
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      return cb([]);
-    }
-    return cb(JSON.parse(fileContent));
-  });
-};
 
 module.exports = class Product {
   constructor(id, title, imageUrl, price, description) {
@@ -25,49 +13,19 @@ module.exports = class Product {
   }
 
   save() {
-    if (this.id) {
-      getProductsFromFile(products => {
-        let updatedProducts;
-        const existingProductIndex = products.findIndex(prod => prod.id === this.id );
-        updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-          console.log(err);
-        });
-      });
-    } else {
-      this.id = Math.random().toString();
-      getProductsFromFile(products => {
-        products.push(this);
-        fs.writeFile(p, JSON.stringify(products), err => {
-          console.log(err);
-        });
-      });
-    }
+    return db.execute(
+      'INSERT INTO product (title, imageUrl, price, description) VALUES (?, ?, ?, ?)',
+      [this.title, this.imageUrl, this.price, this.description]
+      );
   };
 
-  static fetchAll(cb) {
-    getProductsFromFile(cb);
+  static fetchAll() {
+    return db.execute('SELECT * FROM product');
   };
 
-  static findById(id, cb) {
-    getProductsFromFile(products => {
-      const product = products.find(prod => prod.id === id);
-      cb(product);
-    });
+  static findById(id) {
+    return db.execute('SELECT * FROM product WHERE product.id = ?', [id]);
   };
 
-  static deleteSpecificProduct(id) {
-    getProductsFromFile(products => {
-      const updatedProducts = products.filter(prod => prod.id !== id);
-      const productToBeDeleted = products.find(prod => prod.id === id);
-      const productPrice = productToBeDeleted.price;
-      fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-        if (!err) {
-          // console.log(1, productPrice, typeof(productPrice));
-          Cart.deleteProduct(id, productPrice);
-        }
-      });
-    });
-  };
+  static deleteSpecificProduct(id) {};
 }

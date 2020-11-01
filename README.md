@@ -1,1 +1,3 @@
-# NodeJs - Dynamic Routes and Advanced Models"# nodejs-dynamic-routes-and-advanced-models" 
+# NodeJs - SQL Introduction
+
+1. npm install mysql2
