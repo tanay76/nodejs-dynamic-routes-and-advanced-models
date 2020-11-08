@@ -1,4 +1,8 @@
+const mongodb = require('mongodb');
+const getDb = require('../util/database').getDb;
 const Product = require('../models/product');
+
+const ObjectId = mongodb.ObjectId;
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
@@ -37,8 +41,10 @@ exports.getSpecificProduct = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  let cartItems = [];
   req.user.getCart()
-    .then(products => { 
+    .then(products => {
+      
    
                                 // OR On collecting all the products and storing them in a
       // let cartProducts = [];          
@@ -53,9 +59,17 @@ exports.getCart = (req, res, next) => {
       path: '/cart',
       // products: cartProducts
       products: products
-    });
-  })
-  .catch(err => console.log(err));
+      });
+      for (let product of products) {
+        cartItems.push({productId: new ObjectId(product._id), quantity: product.quantity})
+      }
+      const db = getDb();
+      return db.collection('users').updateOne(
+        {_id: new ObjectId(req.user._id)}, 
+        {$set: {cart: {items: cartItems}}}
+        );
+    })
+    .catch(err => console.log(err));
 };
 
 exports.postCart = (req, res, next) => { 

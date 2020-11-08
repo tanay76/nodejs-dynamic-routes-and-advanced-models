@@ -57,10 +57,14 @@ class User {
     .toArray()                         // matching with the ids of the products in the cart
     .then(products => { 
       return products.map(p => {      // On collecting all the products and storing them in a
-                                      // JavaScript Array, a copy of the product details is formed
-        return {...p,               // together with their respective Quantities as in the cart
+                                              // JavaScript Array, a copy of the product details is formed
+        for(let productId of productIds) {
+          if(p._id.toString() === productId.toString()) {
+            return {...p,               // together with their respective Quantities as in the cart
               quantity: this.cart.items.find(i => i.productId.toString() === p._id.toString()).quantity
             };
+          }
+        }                                     
       });
     })
     .catch(err => {

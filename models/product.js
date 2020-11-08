@@ -59,12 +59,25 @@ class Product {
     const db = getDb();
     return db.collection('products').deleteOne({_id: new ObjectId(id)})
     .then(result => {
-      console.log('Deleted Successfully');
+      // return db.collection('users').find({'cart.items.productId': new ObjectId(id)})
+      // .toArray()
+      // .then(users => {
+      //   for (let user of users) {
+      //     for (let i=0; i<user.cart.items.length; i++) {
+      //       if(user.cart.items[i].productId.toString() === id.toString()) {
+      //         return db.collection('users').updateOne(
+      //           {_id: new ObjectId(user._id)}, 
+      //           {$pull: {cart: {items: {productId: new ObjectId(id)}}}}
+      //         );
+      //       }
+      //     }
+      //   }
+      // })
     })
     .catch(err => {
       console.log(err);
     });
   }
-};
+}
 
 module.exports = Product;
