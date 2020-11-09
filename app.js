@@ -20,7 +20,7 @@ app.use((req, res, next) => {
         next();
     })
     .catch(err => {
-        console.log(err);
+        console.log('Error1: ',err);
     });
 });
 

@@ -60,14 +60,17 @@ exports.getCart = (req, res, next) => {
       // products: cartProducts
       products: products
       });
-      for (let product of products) {
+      for (let product of products) {  //code to remove productId of the product deleted from
+                                        // the product collection permanently
         cartItems.push({productId: new ObjectId(product._id), quantity: product.quantity})
       }
       const db = getDb();
       return db.collection('users').updateOne(
         {_id: new ObjectId(req.user._id)}, 
         {$set: {cart: {items: cartItems}}}
-        );
+        )
+        .then()
+        .catch(err=>console.log(err));
     })
     .catch(err => console.log(err));
 };
