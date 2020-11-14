@@ -1,13 +1,17 @@
+const chalk = require('chalk');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 
-exports.getProducts = (req, res, next) => {
+exports.getIndex = (req, res, next) => {
   Product.find()
   .then(products => {
     res.render('shop/index', {
       pageTitle:'Shop', 
       path:'/', 
-      prods:products});
+      prods:products,
+      isAuthenticated: req.session.isLoggedIn
+    });
   })
   .catch(err => console.log(err));
 };
@@ -18,7 +22,9 @@ exports.getAllProducts = (req, res, next) => {
     res.render('shop/product-list', {
       pageTitle:'All Products', 
       path:'/products', 
-      prods:products});
+      prods:products,
+      isAuthenticated: req.session.isLoggedIn
+    });
   })
   .catch(err => {
     console.log(err);
@@ -32,7 +38,9 @@ exports.getSpecificProduct = (req, res, next) => {
     res.render('shop/product-detail', {
       pageTitle: product.title, 
       path:'/products', 
-      product:product});
+      product:product,
+      isAuthenticated: req.session.isLoggedIn
+    });
   })
   .catch(err => console.log(err));
 };
@@ -44,7 +52,8 @@ exports.getCart = (req, res, next) => {
     res.render('shop/cart', {
       pageTitle: 'Your Cart',
       path: '/cart',
-      products: user.cart.items
+      products: user.cart.items,
+      isAuthenticated: req.session.isLoggedIn
     });
   })
   .catch(err => console.log('Error: ',err));
@@ -79,7 +88,8 @@ exports.getOrders = (req, res, next) => {
     res.render('shop/orders', {
       pageTitle:'Your Orders', 
       path:'/orders',
-      orders: orders
+      orders: orders,
+      isAuthenticated: req.session.isLoggedIn
     });
   })
 };

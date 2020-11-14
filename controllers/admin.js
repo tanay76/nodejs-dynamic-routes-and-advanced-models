@@ -2,7 +2,12 @@ const Product = require('../models/product');
 const User = require('../models/user');
 
 exports.getAddProducts = (req, res, next) => {
-  res.render('admin/edit-product', {pageTitle:'Add Product', path:'/admin/add-product', editing:false});
+  res.render('admin/edit-product', {
+    pageTitle:'Add Product', 
+    path:'/admin/add-product',
+    isAuthenticated: req.session.isLoggedIn, 
+    editing:false
+  });
 };
 
 
@@ -12,7 +17,8 @@ exports.getProducts = (req, res, next) => {
     res.render('admin/products', {
       pageTitle:'Admin Products', 
       path:'/admin/products', 
-      prods:products
+      prods:products,
+      isAuthenticated: req.session.isLoggedIn
     });
   })
   .catch(err => {
@@ -30,7 +36,8 @@ exports.postAddProducts = (req, res, next) => {
     imageUrl: imageUrl,
     price: price,
     description: description,
-    userId: req.user
+    userId: req.user,
+    isAuthenticated: req.session.isLoggedIn
   });
   product.save()
   .then(() => {
@@ -41,7 +48,7 @@ exports.postAddProducts = (req, res, next) => {
   });
 };
 
-exports.getEditProduct = (req, res, next) => {        
+exports.getEditProduct = (req, res, next) => {    
   const editMod = req.query.edit;
   const prodId = req.params.productId;
   Product.findById(prodId)
@@ -50,7 +57,8 @@ exports.getEditProduct = (req, res, next) => {
       pageTitle: product.title,
       path:'edit-product',
       editing:editMod,
-      product:product
+      product:product,
+      isAuthenticated: req.session.isLoggedIn
     });
   })
   .catch(err => console.log(err)); 
