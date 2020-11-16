@@ -6,3 +6,6 @@
 4. npm install --save mongoose
 5. npm install --save express-session
 6. npm install --save connect-mongodb-session
+7. npm install --save bcryptjs
+8. npm install --save csurf
+9. npm install --save connect-flash
