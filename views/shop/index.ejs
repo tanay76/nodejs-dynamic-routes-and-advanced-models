@@ -6,6 +6,11 @@
     <%- include('../includes/navigation.ejs') %>
 
     <main>
+        <% if (successMessage) { %>
+            <div class="user-message user-message--success"><%= successMessage %>
+                <p><button class="btn" type="submit" id="ok_btn">Ok</button></p>
+            </div>
+        <% } %>
         <% if (prods.length > 0) { %>
             <div class="grid">
                 <% for (let product of prods) { %>

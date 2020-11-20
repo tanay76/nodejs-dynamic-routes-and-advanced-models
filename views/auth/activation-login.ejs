@@ -11,9 +11,9 @@
             <div class="user-message user-message--error"><%= errorMessage %></div>
         <% } %>
         <% if (successMessage) { %>
-            <div class="user-message user-message--success"><%= successMessage %><p>Now go to <a href = "/">Home Page</a> to proceed further</p></div>
+            <div class="user-message user-message--success"><%= successMessage %></div>
         <% } %>
-        <form class="login-form" action="/login" method="POST">
+        <form class="login-form" action="/activation-login" method="POST">
             <div class="form-control">
                 <label for="email">E-Mail</label>
                 <input type="email" name="email" id="email" value="<%= oldInput.email %>">
@@ -22,11 +22,9 @@
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" value="<%= oldInput.password %>">
             </div>
+            <input type="hidden" name="userId" value="<%= userId %>">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="btn" type="submit">Login</button>
+            <button class="btn" type="submit">Activate Your Account</button>
         </form>
-        <div class="centered">
-            <a href="/reset-password">Forgot Password?</a>
-        </div>
     </main>
 <%- include('../includes/end.ejs') %>

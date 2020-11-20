@@ -4,16 +4,25 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getIndex = (req, res, next) => {
+  let message = req.flash('success');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   Product.find()
   .then(products => {
     res.render('shop/index', {
       pageTitle:'Shop', 
-      path:'/', 
+      path:'/',
+      successMessage: message, 
       prods:products
     });
   })
-  .catch(err => console.log(err));
-};
+  .catch(err => {
+    console.log('getIndexerror: ', err);
+  });
+}
 
 exports.getAllProducts = (req, res, next) => {
   Product.find()
@@ -98,12 +107,12 @@ exports.postOrders = (req, res, next) => {
     });
     const user = {userId: req.user._id , email: req.user.email};
     const order = new Order ({products: products, user: user});
-    return order.save()
-    .then(result => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.redirect('/orders');
-    })
+    return order.save(); 
+  })
+  .then(result => {
+    return req.user.clearCart();
+  })
+  .then(() => {
+    res.redirect('/orders');
   });
 };
